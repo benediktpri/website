@@ -1,0 +1,32 @@
+---
+const navLinks = [
+  { label: "Projects", href: "/projects" },
+  { label: "Blog", href: "/blog" },
+  { label: "CV", href: "/cv" },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<nav class="flex items-center justify-between py-6">
+  <a href="/" class="font-medium text-gray-900 no-underline hover:no-underline">
+    Benedikt Prisett
+  </a>
+  <div class="flex items-center gap-4 text-sm sm:gap-6">
+    {
+      navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            "no-underline hover:no-underline",
+            pathname.startsWith(link.href)
+              ? "font-medium text-gray-900"
+              : "text-gray-500 hover:text-gray-900",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </div>
+</nav>

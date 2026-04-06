@@ -1,19 +1,24 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Coming Soon</title>
-  </head>
-  <body
-    class="flex min-h-screen items-center justify-center bg-gray-50 text-gray-800"
-  >
-    <p class="text-2xl font-light">work in progress</p>
-  </body>
-</html>
+<BaseLayout title="Benedikt Prisett">
+  <section class="py-16 sm:py-24">
+    <h1 class="text-2xl font-medium text-gray-900">Hi, I'm Benedikt.</h1>
+    <div class="mt-6 space-y-4 leading-relaxed text-gray-600">
+      <p>
+        I'm currently pursuing a <a href="/cv">Master's in Data Science</a> at the
+        University of Mannheim, while working as an <a href="/cv"
+          >AI Developer</a
+        > at SAP Signavio. I love learning, whether that means
+        <a href="/projects">building something new</a> or diving into a good <a
+          href="/reading">read</a
+        >.
+      </p>
+      <p>
+        Outside of tech, I'm a passionate <a href="/running">runner</a> and enjoy
+        <a href="/travel">traveling</a> whenever I get the chance.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

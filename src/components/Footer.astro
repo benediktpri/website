@@ -1,0 +1,31 @@
+---
+const socialLinks = [
+  { label: "GitHub", href: "https://github.com/benediktpri" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/benedikt-prisett" },
+  { label: "Email", href: "mailto:benedikt@prisett.de" },
+];
+---
+
+<footer
+  class="mt-16 flex items-center justify-between border-t border-gray-200 py-6 text-sm text-gray-500"
+>
+  <div class="flex items-center gap-4">
+    {
+      socialLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-gray-500 no-underline hover:text-gray-900 hover:no-underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </div>
+  <a
+    href="/imprint"
+    class="text-gray-400 no-underline hover:text-gray-900 hover:no-underline"
+    >Imprint</a
+  >
+</footer>
