@@ -1,17 +1,77 @@
 {
   "activities": [
-    { "date": "2026-01-03", "type": "Run", "moving_time": 1800, "distance": 5200 },
-    { "date": "2026-01-05", "type": "Run", "moving_time": 3600, "distance": 10400 },
-    { "date": "2026-01-07", "type": "Ride", "moving_time": 5400, "distance": 25000 },
-    { "date": "2026-01-10", "type": "Run", "moving_time": 2700, "distance": 7500 },
-    { "date": "2026-01-12", "type": "Run", "moving_time": 4200, "distance": 12000 },
-    { "date": "2026-01-14", "type": "Ride", "moving_time": 3600, "distance": 18000 },
-    { "date": "2026-01-17", "type": "Run", "moving_time": 3000, "distance": 8500 },
-    { "date": "2026-01-19", "type": "Run", "moving_time": 5400, "distance": 15000 },
-    { "date": "2026-01-21", "type": "Workout", "moving_time": 2400, "distance": 0 },
-    { "date": "2026-01-24", "type": "Run", "moving_time": 2700, "distance": 7500 },
-    { "date": "2026-01-26", "type": "Run", "moving_time": 3600, "distance": 10200 },
-    { "date": "2026-01-28", "type": "Ride", "moving_time": 7200, "distance": 42000 }
+    {
+      "date": "2026-01-03",
+      "type": "Run",
+      "moving_time": 1800,
+      "distance": 5200
+    },
+    {
+      "date": "2026-01-05",
+      "type": "Run",
+      "moving_time": 3600,
+      "distance": 10400
+    },
+    {
+      "date": "2026-01-07",
+      "type": "Ride",
+      "moving_time": 5400,
+      "distance": 25000
+    },
+    {
+      "date": "2026-01-10",
+      "type": "Run",
+      "moving_time": 2700,
+      "distance": 7500
+    },
+    {
+      "date": "2026-01-12",
+      "type": "Run",
+      "moving_time": 4200,
+      "distance": 12000
+    },
+    {
+      "date": "2026-01-14",
+      "type": "Ride",
+      "moving_time": 3600,
+      "distance": 18000
+    },
+    {
+      "date": "2026-01-17",
+      "type": "Run",
+      "moving_time": 3000,
+      "distance": 8500
+    },
+    {
+      "date": "2026-01-19",
+      "type": "Run",
+      "moving_time": 5400,
+      "distance": 15000
+    },
+    {
+      "date": "2026-01-21",
+      "type": "Workout",
+      "moving_time": 2400,
+      "distance": 0
+    },
+    {
+      "date": "2026-01-24",
+      "type": "Run",
+      "moving_time": 2700,
+      "distance": 7500
+    },
+    {
+      "date": "2026-01-26",
+      "type": "Run",
+      "moving_time": 3600,
+      "distance": 10200
+    },
+    {
+      "date": "2026-01-28",
+      "type": "Ride",
+      "moving_time": 7200,
+      "distance": 42000
+    }
   ],
   "years": [
     {

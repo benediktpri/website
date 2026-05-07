@@ -30,14 +30,14 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
 
 <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
   <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
-    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+    <div class="text-2xl font-semibold text-gray-900 tabular-nums">
       {activeDays}
     </div>
     <div class="mt-1 text-sm text-gray-500">Days active</div>
     <div class="mt-0.5 text-xs text-gray-400">{pctOfYear}% of the year</div>
   </div>
   <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
-    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+    <div class="text-2xl font-semibold text-gray-900 tabular-nums">
       {distanceKm.toLocaleString("en-US")} km
     </div>
     <div class="mt-1 text-sm text-gray-500">Total distance</div>
@@ -46,7 +46,7 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
     </div>
   </div>
   <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
-    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+    <div class="text-2xl font-semibold text-gray-900 tabular-nums">
       {totalHours}h {totalMinutes}m
     </div>
     <div class="mt-1 text-sm text-gray-500">Total time</div>
@@ -59,9 +59,7 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
     categories.map((cat) => {
       const catHours = Math.floor(cat.moving_time_seconds / 3600);
       const catMinutes = Math.floor((cat.moving_time_seconds % 3600) / 60);
-      const catAvgHours = Math.floor(
-        cat.avg_weekly_moving_time_seconds / 3600,
-      );
+      const catAvgHours = Math.floor(cat.avg_weekly_moving_time_seconds / 3600);
       const catAvgMinutes = Math.floor(
         (cat.avg_weekly_moving_time_seconds % 3600) / 60,
       );
@@ -72,7 +70,7 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
             data-stats={cat.key}
             style="display:none"
           >
-            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+            <div class="text-2xl font-semibold text-gray-900 tabular-nums">
               {cat.active_days}
             </div>
             <div class="mt-1 text-sm text-gray-500">Days active</div>
@@ -85,7 +83,7 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
             data-stats={cat.key}
             style="display:none"
           >
-            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+            <div class="text-2xl font-semibold text-gray-900 tabular-nums">
               {cat.distance_km.toLocaleString("en-US")} km
             </div>
             <div class="mt-1 text-sm text-gray-500">Total distance</div>
@@ -98,7 +96,7 @@ const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
             data-stats={cat.key}
             style="display:none"
           >
-            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+            <div class="text-2xl font-semibold text-gray-900 tabular-nums">
               {catHours}h {catMinutes}m
             </div>
             <div class="mt-1 text-sm text-gray-500">Total time</div>

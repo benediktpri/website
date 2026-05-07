@@ -41,7 +41,7 @@ const icons: Record<string, typeof Bike> = {
     {
       olderYears.length > 0 && (
         <>
-          <span id="older-year-buttons" class="hidden contents">
+          <span id="older-year-buttons" class="contents hidden">
             {olderYears.map((year) => (
               <button
                 class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-200"
@@ -100,7 +100,9 @@ const icons: Record<string, typeof Bike> = {
               )}
             </span>
             <span class="font-medium">{cat.label}</span>
-            <span class="pct-label min-w-[3ch] text-right text-gray-400">{pct}%</span>
+            <span class="pct-label min-w-[3ch] text-right text-gray-400">
+              {pct}%
+            </span>
           </button>
         );
       })

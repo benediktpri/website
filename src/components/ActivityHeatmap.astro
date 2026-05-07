@@ -191,7 +191,9 @@ const dayLabels = [
             fill={cell.color}
             data-type={cell.type}
             data-color={cell.color}
-            data-secondaries={cell.secondaries ? JSON.stringify(cell.secondaries) : undefined}
+            data-secondaries={
+              cell.secondaries ? JSON.stringify(cell.secondaries) : undefined
+            }
           />
         )),
       )

@@ -41,17 +41,16 @@ async function syncActivities(env: Env): Promise<string> {
 
   const hookRes = await fetch(env.DEPLOY_HOOK_URL, { method: "POST" });
   if (!hookRes.ok) {
-    console.error(`Deploy hook failed: ${hookRes.status} ${hookRes.statusText}`);
+    console.error(
+      `Deploy hook failed: ${hookRes.status} ${hookRes.statusText}`,
+    );
   }
 
   return `Synced ${newActivities.length} new activities (${merged.length} total)`;
 }
 
 export default {
-  async scheduled(
-    _event: ScheduledEvent,
-    env: Env,
-  ): Promise<void> {
+  async scheduled(_event: ScheduledEvent, env: Env): Promise<void> {
     await syncActivities(env);
   },
 

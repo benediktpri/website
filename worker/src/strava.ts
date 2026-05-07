@@ -33,7 +33,9 @@ export function stripActivity(raw: Record<string, unknown>): StravaActivity {
   for (const field of ACTIVITY_FIELDS) {
     if (raw[field] == null) {
       if (!OPTIONAL_FIELDS.has(field)) {
-        throw new Error(`Activity ${raw.id ?? "unknown"} missing field: ${field}`);
+        throw new Error(
+          `Activity ${raw.id ?? "unknown"} missing field: ${field}`,
+        );
       }
       continue;
     }
