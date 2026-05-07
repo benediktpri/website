@@ -1,0 +1,46 @@
+---
+import type { CategoryStats } from "../types/strava";
+
+interface Props {
+  categories: CategoryStats[];
+}
+
+const { categories } = Astro.props;
+
+const otherGradient = `linear-gradient(90deg, #0060D0, #B41F92)`;
+---
+
+<div
+  class="mt-3 flex flex-wrap items-center justify-between gap-y-2 text-xs text-gray-500"
+>
+  <div class="flex items-center gap-3">
+    {
+      categories.map((cat) => (
+        <span class="flex items-center gap-1">
+          {cat.key === "other" ? (
+            <span
+              class="inline-block h-2.5 w-2.5 rounded-full"
+              style={`background: ${otherGradient}`}
+            />
+          ) : (
+            <span
+              class="inline-block h-2.5 w-2.5 rounded-full"
+              style={`background: ${cat.color}`}
+            />
+          )}
+          {cat.label}
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="flex items-center gap-1">
+    <span class="text-gray-400">Less</span>
+    <span class="inline-block h-2.5 w-2.5 rounded-sm bg-[#EBEDF0]"></span>
+    <span class="inline-block h-2.5 w-2.5 rounded-sm bg-gray-300"></span>
+    <span class="inline-block h-2.5 w-2.5 rounded-sm bg-gray-400"></span>
+    <span class="inline-block h-2.5 w-2.5 rounded-sm bg-gray-500"></span>
+    <span class="inline-block h-2.5 w-2.5 rounded-sm bg-gray-600"></span>
+    <span class="text-gray-400">More</span>
+  </div>
+</div>

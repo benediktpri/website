@@ -1,10 +1,380 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ActivityHeatmap from "../components/ActivityHeatmap.astro";
+import HeatmapLegend from "../components/HeatmapLegend.astro";
+import StatCards from "../components/StatCards.astro";
+import FilterBlock from "../components/FilterBlock.astro";
+import type { StravaPageData, DaySummary } from "../types/strava";
+
+import stravaData from "../data/strava.json";
+const data = stravaData as StravaPageData;
+
+const years = data.years.map((y) => y.year).sort((a, b) => b - a);
+const currentYear = years[0] || new Date().getFullYear();
+const hasData = data.activities.length > 0 && data.years.length > 0;
+
+const VISIBLE_YEARS = 8;
+const recentYears = years.slice(0, VISIBLE_YEARS);
+const olderYears = years.slice(VISIBLE_YEARS);
+
+const yearDataMap = new Map(data.years.map((y) => [y.year, y]));
+
+const currentYearData = yearDataMap.get(currentYear);
+const currentTotalActivities = currentYearData
+  ? currentYearData.categories.reduce((sum, c) => sum + c.count, 0)
+  : 0;
+
+function activitiesToDays(
+  activities: StravaPageData["activities"],
+): DaySummary[] {
+  const byDate = new Map<string, StravaPageData["activities"]>();
+  for (const a of activities) {
+    const existing = byDate.get(a.date) || [];
+    existing.push(a);
+    byDate.set(a.date, existing);
+  }
+
+  const days: DaySummary[] = [];
+  for (const [date, dayActivities] of byDate) {
+    const longest = dayActivities.reduce((a, b) =>
+      a.moving_time >= b.moving_time ? a : b,
+    );
+
+    const otherTypes = new Map<string, (typeof dayActivities)[0]>();
+    for (const a of dayActivities) {
+      if (a.type === longest.type) continue;
+      const existing = otherTypes.get(a.type);
+      if (!existing || a.moving_time > existing.moving_time) {
+        otherTypes.set(a.type, a);
+      }
+    }
+
+    days.push({
+      date,
+      type: longest.type,
+      moving_time: longest.moving_time,
+      count: dayActivities.length,
+      secondaries:
+        otherTypes.size > 0
+          ? [...otherTypes.values()].map((a) => ({
+              type: a.type,
+              moving_time: a.moving_time,
+            }))
+          : undefined,
+    });
+  }
+  return days;
+}
 ---
 
-<BaseLayout title="Running — Benedikt Prisett">
-  <section class="flex flex-1 flex-col items-center justify-center text-center">
-    <p class="text-xl font-light text-gray-400">work in progress</p>
-    <p class="mt-2 text-sm text-gray-400">stay tuned</p>
+<BaseLayout
+  title="Running & Cycling — Benedikt Prisett"
+  description="Running and cycling stats with personal records"
+>
+  <section class="pt-6 pb-12">
+    <div class="flex items-baseline justify-between">
+      <h1 class="text-2xl font-medium text-gray-900">Running & Cycling</h1>
+    </div>
+
+    <p class="mt-4 text-gray-600">
+      I started running in 2017 and picked up cycling along the way. Three
+      marathons down, always training for the next thing — follow along on
+      <a
+        href="https://www.strava.com/athletes/86763040"
+        target="_blank"
+        rel="noopener noreferrer">Strava</a
+      >.
+    </p>
+
+    <p class="mt-6 text-xs font-medium tracking-wide text-gray-400 uppercase">
+      All-time PBs
+    </p>
+    <dl class="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-700">
+      <div>
+        <dt class="inline">Marathon</dt>
+        <dd class="inline font-medium">3:22:18</dd>
+      </div>
+      <div>
+        <dt class="inline">Half</dt>
+        <dd class="inline font-medium">1:38:18</dd>
+      </div>
+      <div>
+        <dt class="inline">10k</dt>
+        <dd class="inline font-medium">39:44</dd>
+      </div>
+      <div>
+        <dt class="inline">5k</dt>
+        <dd class="inline font-medium">19:01</dd>
+      </div>
+    </dl>
+
+    <hr class="mt-6 border-gray-200" />
+
+    {
+      hasData ? (
+        <>
+          <FilterBlock
+            recentYears={recentYears}
+            olderYears={olderYears}
+            currentYear={currentYear}
+            categories={currentYearData!.categories}
+            totalActivities={currentTotalActivities}
+          />
+
+          {years.map((year) => {
+            const yearData = yearDataMap.get(year)!;
+            const yearActivities = data.activities.filter((d) =>
+              d.date.startsWith(String(year)),
+            );
+            const yearDays = activitiesToDays(yearActivities);
+            const yearTotal = yearData.categories.reduce(
+              (sum, c) => sum + c.count,
+              0,
+            );
+            const pctMap = Object.fromEntries(
+              yearData.categories.map((c) => [
+                c.key,
+                yearTotal > 0 ? Math.round((c.count / yearTotal) * 100) : 0,
+              ]),
+            );
+            return (
+              <div
+                class="year-content mt-6"
+                data-year={year}
+                data-running-pct={pctMap.running || 0}
+                data-cycling-pct={pctMap.cycling || 0}
+                data-strength-pct={pctMap.strength || 0}
+                data-other-pct={pctMap.other || 0}
+                style={year !== currentYear ? "display:none" : undefined}
+              >
+                <StatCards
+                  activeDays={yearData.active_days}
+                  pctOfYear={yearData.pct_of_year}
+                  distanceKm={yearData.total_distance_km}
+                  movingTimeSeconds={yearData.total_moving_time_seconds}
+                  avgWeeklyDistanceKm={yearData.avg_weekly_distance_km}
+                  avgWeeklyMovingTimeSeconds={
+                    yearData.avg_weekly_moving_time_seconds
+                  }
+                  categories={yearData.categories}
+                />
+                <div class="mt-6">
+                  <ActivityHeatmap days={yearDays} year={year} />
+                </div>
+                <HeatmapLegend categories={yearData.categories} />
+              </div>
+            );
+          })}
+        </>
+      ) : (
+        <p class="mt-4 text-gray-500">No activities synced yet.</p>
+      )
+    }
   </section>
+
+  <script>
+    const CATEGORY_TYPES: Record<string, string[]> = {
+      running: ["Run", "TrailRun", "VirtualRun"],
+      cycling: ["Ride", "VirtualRide", "MountainBikeRide"],
+      strength: ["Workout", "WeightTraining"],
+    };
+
+    const EMPTY_COLOR = "#EBEDF0";
+
+    let activeFilter: string | null = null;
+    let activeYear: string | null = null;
+
+    // Initialize active year from the first pressed button
+    const initialYearBtn = document.querySelector<HTMLButtonElement>(
+      '#year-selector button[aria-pressed="true"]',
+    );
+    if (initialYearBtn) activeYear = initialYearBtn.dataset.year || null;
+
+    function getActiveYearContent(): HTMLElement | null {
+      if (!activeYear) return null;
+      return document.querySelector<HTMLElement>(
+        `.year-content[data-year="${activeYear}"]`,
+      );
+    }
+
+    function updateCategoryPercentages() {
+      const yearEl = getActiveYearContent();
+      if (!yearEl) return;
+
+      document
+        .querySelectorAll<HTMLButtonElement>(
+          "#category-selector button[data-filter]",
+        )
+        .forEach((btn) => {
+          const key = btn.dataset.filter!;
+          const pct = yearEl.dataset[`${key}Pct`] || "0";
+          const pctSpan = btn.querySelector<HTMLElement>(".pct-label");
+          if (pctSpan) pctSpan.textContent = `${pct}%`;
+        });
+    }
+
+    function resetFilter(yearEl: HTMLElement) {
+      yearEl
+        .querySelectorAll<HTMLElement>("rect[data-type]")
+        .forEach((rect) => {
+          rect.setAttribute("fill", rect.dataset.color || EMPTY_COLOR);
+        });
+      yearEl.querySelectorAll<HTMLElement>("[data-stats]").forEach((el) => {
+        el.style.display = el.dataset.stats === "all" ? "" : "none";
+      });
+    }
+
+    function applyFilter(yearEl: HTMLElement, category: string) {
+      const types = CATEGORY_TYPES[category];
+
+      yearEl
+        .querySelectorAll<HTMLElement>("rect[data-type]")
+        .forEach((rect) => {
+          const type = rect.dataset.type;
+          if (type === "empty") return;
+
+          const matchesPrimary = types
+            ? types.includes(type || "")
+            : !Object.values(CATEGORY_TYPES)
+                .flat()
+                .includes(type || "");
+          if (matchesPrimary) {
+            rect.setAttribute("fill", rect.dataset.color || EMPTY_COLOR);
+            return;
+          }
+
+          const secondariesRaw = rect.dataset.secondaries;
+          if (secondariesRaw) {
+            const secondaries: { type: string; color: string }[] =
+              JSON.parse(secondariesRaw);
+            const match = types
+              ? secondaries.find((s) => types.includes(s.type))
+              : secondaries.find(
+                  (s) => !Object.values(CATEGORY_TYPES).flat().includes(s.type),
+                );
+            if (match) {
+              rect.setAttribute("fill", match.color);
+              return;
+            }
+          }
+
+          rect.setAttribute("fill", EMPTY_COLOR);
+        });
+
+      yearEl.querySelectorAll<HTMLElement>("[data-stats]").forEach((el) => {
+        el.style.display = el.dataset.stats === category ? "" : "none";
+      });
+    }
+
+    function updateCategoryButtonStyles() {
+      document
+        .querySelectorAll<HTMLButtonElement>(
+          "#category-selector button[data-filter]",
+        )
+        .forEach((btn) => {
+          const isActive = btn.getAttribute("aria-pressed") === "true";
+          btn.classList.toggle("bg-gray-900", isActive);
+          btn.classList.toggle("text-white", isActive);
+          btn.classList.toggle("bg-gray-100", !isActive);
+          btn.classList.toggle("text-gray-600", !isActive);
+          btn.classList.toggle("hover:bg-gray-200", !isActive);
+          const icon = btn.querySelector<HTMLElement>(".filter-icon");
+          if (icon) icon.style.color = isActive ? "" : btn.dataset.color || "";
+          const pctLabel = btn.querySelector<HTMLElement>(".pct-label");
+          if (pctLabel) {
+            pctLabel.classList.toggle("text-gray-400", !isActive);
+            pctLabel.classList.toggle("text-gray-300", isActive);
+          }
+        });
+    }
+
+    // Category filter clicks
+    document
+      .querySelectorAll<HTMLButtonElement>(
+        "#category-selector button[data-filter]",
+      )
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const category = btn.dataset.filter!;
+          const isActive = btn.getAttribute("aria-pressed") === "true";
+
+          // Reset all
+          document
+            .querySelectorAll<HTMLButtonElement>(
+              "#category-selector button[data-filter]",
+            )
+            .forEach((b) => b.setAttribute("aria-pressed", "false"));
+
+          const yearEl = getActiveYearContent();
+          if (!yearEl) return;
+
+          if (isActive) {
+            activeFilter = null;
+            resetFilter(yearEl);
+          } else {
+            activeFilter = category;
+            btn.setAttribute("aria-pressed", "true");
+            applyFilter(yearEl, category);
+          }
+
+          updateCategoryButtonStyles();
+        });
+      });
+
+    // Year switching
+    const contents = document.querySelectorAll<HTMLElement>(".year-content");
+
+    document
+      .querySelectorAll<HTMLButtonElement>("#year-selector button[data-year]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const year = btn.dataset.year!;
+          activeYear = year;
+
+          document
+            .querySelectorAll<HTMLButtonElement>(
+              "#year-selector button[data-year]",
+            )
+            .forEach((b) => {
+              const isActive = b.dataset.year === year;
+              b.setAttribute("aria-pressed", String(isActive));
+              b.classList.toggle("bg-gray-900", isActive);
+              b.classList.toggle("text-white", isActive);
+              b.classList.toggle("bg-gray-100", !isActive);
+              b.classList.toggle("text-gray-600", !isActive);
+              b.classList.toggle("hover:bg-gray-200", !isActive);
+            });
+
+          contents.forEach((el) => {
+            const show = el.dataset.year === year;
+            el.style.display = show ? "" : "none";
+            if (show) {
+              if (activeFilter) {
+                applyFilter(el, activeFilter);
+              } else {
+                resetFilter(el);
+              }
+            }
+          });
+
+          updateCategoryPercentages();
+        });
+      });
+
+    // Older years toggle
+    const showOlderBtn = document.getElementById("toggle-older-years");
+    const olderBtns = document.getElementById("older-year-buttons");
+    if (showOlderBtn && olderBtns) {
+      showOlderBtn.addEventListener("click", () => {
+        const expanded = olderBtns.classList.toggle("hidden");
+        if (expanded) {
+          showOlderBtn.innerHTML = "&rsaquo;";
+          showOlderBtn.setAttribute("aria-expanded", "false");
+        } else {
+          showOlderBtn.innerHTML = "&lsaquo;";
+          showOlderBtn.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
+  </script>
 </BaseLayout>

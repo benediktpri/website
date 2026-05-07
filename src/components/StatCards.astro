@@ -1,0 +1,113 @@
+---
+import type { CategoryStats } from "../types/strava";
+
+interface Props {
+  activeDays: number;
+  pctOfYear: number;
+  distanceKm: number;
+  movingTimeSeconds: number;
+  avgWeeklyDistanceKm: number;
+  avgWeeklyMovingTimeSeconds: number;
+  categories: CategoryStats[];
+}
+
+const {
+  activeDays,
+  pctOfYear,
+  distanceKm,
+  movingTimeSeconds,
+  avgWeeklyDistanceKm,
+  avgWeeklyMovingTimeSeconds,
+  categories,
+} = Astro.props;
+
+const totalHours = Math.floor(movingTimeSeconds / 3600);
+const totalMinutes = Math.floor((movingTimeSeconds % 3600) / 60);
+
+const avgHours = Math.floor(avgWeeklyMovingTimeSeconds / 3600);
+const avgMinutes = Math.floor((avgWeeklyMovingTimeSeconds % 3600) / 60);
+---
+
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+  <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
+    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+      {activeDays}
+    </div>
+    <div class="mt-1 text-sm text-gray-500">Days active</div>
+    <div class="mt-0.5 text-xs text-gray-400">{pctOfYear}% of the year</div>
+  </div>
+  <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
+    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+      {distanceKm.toLocaleString("en-US")} km
+    </div>
+    <div class="mt-1 text-sm text-gray-500">Total distance</div>
+    <div class="mt-0.5 text-xs text-gray-400">
+      avg {avgWeeklyDistanceKm} km/week
+    </div>
+  </div>
+  <div class="rounded-lg bg-gray-50 p-4" data-stats="all">
+    <div class="text-2xl font-semibold tabular-nums text-gray-900">
+      {totalHours}h {totalMinutes}m
+    </div>
+    <div class="mt-1 text-sm text-gray-500">Total time</div>
+    <div class="mt-0.5 text-xs text-gray-400">
+      avg {avgHours}h {avgMinutes}m/week
+    </div>
+  </div>
+
+  {
+    categories.map((cat) => {
+      const catHours = Math.floor(cat.moving_time_seconds / 3600);
+      const catMinutes = Math.floor((cat.moving_time_seconds % 3600) / 60);
+      const catAvgHours = Math.floor(
+        cat.avg_weekly_moving_time_seconds / 3600,
+      );
+      const catAvgMinutes = Math.floor(
+        (cat.avg_weekly_moving_time_seconds % 3600) / 60,
+      );
+      return (
+        <>
+          <div
+            class="rounded-lg bg-gray-50 p-4"
+            data-stats={cat.key}
+            style="display:none"
+          >
+            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+              {cat.active_days}
+            </div>
+            <div class="mt-1 text-sm text-gray-500">Days active</div>
+            <div class="mt-0.5 text-xs text-gray-400">
+              {cat.pct_of_year}% of the year
+            </div>
+          </div>
+          <div
+            class="rounded-lg bg-gray-50 p-4"
+            data-stats={cat.key}
+            style="display:none"
+          >
+            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+              {cat.distance_km.toLocaleString("en-US")} km
+            </div>
+            <div class="mt-1 text-sm text-gray-500">Total distance</div>
+            <div class="mt-0.5 text-xs text-gray-400">
+              avg {cat.avg_weekly_distance_km} km/week
+            </div>
+          </div>
+          <div
+            class="rounded-lg bg-gray-50 p-4"
+            data-stats={cat.key}
+            style="display:none"
+          >
+            <div class="text-2xl font-semibold tabular-nums text-gray-900">
+              {catHours}h {catMinutes}m
+            </div>
+            <div class="mt-1 text-sm text-gray-500">Total time</div>
+            <div class="mt-0.5 text-xs text-gray-400">
+              avg {catAvgHours}h {catAvgMinutes}m/week
+            </div>
+          </div>
+        </>
+      );
+    })
+  }
+</div>

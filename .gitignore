@@ -20,6 +20,12 @@ pnpm-debug.log*
 .env
 .env.production
 
+# wrangler
+.wrangler/
+
+# generated build-time data
+src/data/strava.json
+
 # macOS-specific files
 .DS_Store
 

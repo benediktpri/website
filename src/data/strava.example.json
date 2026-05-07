@@ -1,0 +1,66 @@
+{
+  "activities": [
+    { "date": "2026-01-03", "type": "Run", "moving_time": 1800, "distance": 5200 },
+    { "date": "2026-01-05", "type": "Run", "moving_time": 3600, "distance": 10400 },
+    { "date": "2026-01-07", "type": "Ride", "moving_time": 5400, "distance": 25000 },
+    { "date": "2026-01-10", "type": "Run", "moving_time": 2700, "distance": 7500 },
+    { "date": "2026-01-12", "type": "Run", "moving_time": 4200, "distance": 12000 },
+    { "date": "2026-01-14", "type": "Ride", "moving_time": 3600, "distance": 18000 },
+    { "date": "2026-01-17", "type": "Run", "moving_time": 3000, "distance": 8500 },
+    { "date": "2026-01-19", "type": "Run", "moving_time": 5400, "distance": 15000 },
+    { "date": "2026-01-21", "type": "Workout", "moving_time": 2400, "distance": 0 },
+    { "date": "2026-01-24", "type": "Run", "moving_time": 2700, "distance": 7500 },
+    { "date": "2026-01-26", "type": "Run", "moving_time": 3600, "distance": 10200 },
+    { "date": "2026-01-28", "type": "Ride", "moving_time": 7200, "distance": 42000 }
+  ],
+  "years": [
+    {
+      "year": 2026,
+      "total_distance_km": 161,
+      "total_activities": 12,
+      "total_moving_time_seconds": 45600,
+      "active_days": 12,
+      "pct_of_year": 9,
+      "avg_weekly_distance_km": 40,
+      "avg_weekly_moving_time_seconds": 11400,
+      "categories": [
+        {
+          "key": "running",
+          "label": "Running",
+          "color": "#16a34a",
+          "count": 8,
+          "active_days": 8,
+          "pct_of_year": 6,
+          "distance_km": 76,
+          "moving_time_seconds": 27000,
+          "avg_weekly_distance_km": 19,
+          "avg_weekly_moving_time_seconds": 6750
+        },
+        {
+          "key": "cycling",
+          "label": "Cycling",
+          "color": "#ea580c",
+          "count": 3,
+          "active_days": 3,
+          "pct_of_year": 2,
+          "distance_km": 85,
+          "moving_time_seconds": 16200,
+          "avg_weekly_distance_km": 21,
+          "avg_weekly_moving_time_seconds": 4050
+        },
+        {
+          "key": "strength",
+          "label": "Strength",
+          "color": "#7c3aed",
+          "count": 1,
+          "active_days": 1,
+          "pct_of_year": 1,
+          "distance_km": 0,
+          "moving_time_seconds": 2400,
+          "avg_weekly_distance_km": 0,
+          "avg_weekly_moving_time_seconds": 600
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+---
+import type { DaySummary } from "../types/strava";
+
+interface Props {
+  days: DaySummary[];
+  year: number;
+}
+
+const { days, year } = Astro.props;
+
+const EMPTY_COLOR = "#EBEDF0";
+
+const PALETTE: Record<string, string[]> = {
+  Run: ["#DBF1BD", "#ABDD7B", "#87D04A", "#70CF25"],
+  TrailRun: ["#DBF1BD", "#ABDD7B", "#87D04A", "#70CF25"],
+  VirtualRun: ["#DBF1BD", "#ABDD7B", "#87D04A", "#70CF25"],
+  Ride: ["#FFD4BB", "#FF9E70", "#FF7530", "#FC5200"],
+  VirtualRide: ["#FFD4BB", "#FF9E70", "#FF7530", "#FC5200"],
+  MountainBikeRide: ["#FFD4BB", "#FF9E70", "#FF7530", "#FC5200"],
+  Hike: ["#C8D9B5", "#8BAC75", "#547F38", "#2C520E"],
+  Swim: ["#BFD9F5", "#6BA8E8", "#2880DC", "#0060D0"],
+  AlpineSki: ["#B6DDDF", "#6CC0C5", "#2A9CA1", "#0D6E72"],
+  Yoga: ["#EBC1E0", "#D573BC", "#C13FA8", "#B41F92"],
+  Workout: ["#E8DDB3", "#C9B561", "#B59428", "#997700"],
+  WeightTraining: ["#E5C2B3", "#C8835D", "#B05C30", "#973100"],
+};
+
+const OTHER_PALETTE = ["#e7e5e4", "#a8a29e", "#78716c", "#44403c"];
+
+const cellSize = 10;
+const cellGap = 2;
+const labelWidth = 28;
+const headerHeight = 16;
+
+// Build a map of date -> DaySummary for quick lookup
+const dayMap = new Map(days.map((d) => [d.date, d]));
+
+// Compute intensity quartiles from moving_time
+const times = days.map((d) => d.moving_time).sort((a, b) => a - b);
+const q1 = times[Math.floor(times.length * 0.25)] || 0;
+const q2 = times[Math.floor(times.length * 0.5)] || 0;
+const q3 = times[Math.floor(times.length * 0.75)] || 0;
+
+function getIntensity(movingTime: number): number {
+  if (movingTime <= q1) return 0;
+  if (movingTime <= q2) return 1;
+  if (movingTime <= q3) return 2;
+  return 3;
+}
+
+function getColor(day: DaySummary | undefined): string {
+  if (!day) return EMPTY_COLOR;
+  const intensity = getIntensity(day.moving_time);
+  const palette = PALETTE[day.type] || OTHER_PALETTE;
+  return palette[intensity];
+}
+
+// Generate all weeks for the year (week columns, Mon=row 0)
+// Use UTC dates throughout to avoid timezone issues at build time
+const jan1 = new Date(Date.UTC(year, 0, 1));
+const dec31 = new Date(Date.UTC(year, 11, 31));
+
+// Find the Monday on or before Jan 1
+const jan1Day = jan1.getUTCDay();
+const startOffset = jan1Day === 0 ? -6 : 1 - jan1Day;
+const gridStart = new Date(Date.UTC(year, 0, 1 + startOffset));
+
+// Build week columns
+interface Cell {
+  date: string;
+  color: string;
+  type: string;
+  inYear: boolean;
+  secondaries?: { type: string; color: string }[];
+}
+
+const weeks: Cell[][] = [];
+let current = new Date(gridStart);
+
+while (current <= dec31 || current.getUTCDay() !== 1) {
+  if (current.getUTCDay() === 1 || weeks.length === 0) {
+    weeks.push([]);
+  }
+  const dateStr = current.toISOString().slice(0, 10);
+  const inYear = current.getUTCFullYear() === year;
+  const day = inYear ? dayMap.get(dateStr) : undefined;
+  const secondaries =
+    day?.secondaries?.map((s) => {
+      const intensity = getIntensity(s.moving_time);
+      const palette = PALETTE[s.type] || OTHER_PALETTE;
+      return { type: s.type, color: palette[intensity] };
+    }) || undefined;
+  weeks[weeks.length - 1].push({
+    date: dateStr,
+    color: inYear ? getColor(day) : "transparent",
+    type: day ? day.type : "empty",
+    inYear,
+    secondaries,
+  });
+  current = new Date(current.getTime() + 86400000);
+  if (weeks.length > 53) break;
+}
+
+// Month labels
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const monthPositions: { label: string; x: number }[] = [];
+let lastMonth = -1;
+for (let w = 0; w < weeks.length; w++) {
+  for (const cell of weeks[w]) {
+    if (!cell.inYear) continue;
+    const m = parseInt(cell.date.slice(5, 7), 10) - 1;
+    if (m !== lastMonth) {
+      monthPositions.push({
+        label: months[m],
+        x: w * (cellSize + cellGap) + labelWidth,
+      });
+      lastMonth = m;
+      break;
+    }
+  }
+}
+
+const svgWidth = labelWidth + weeks.length * (cellSize + cellGap);
+const svgHeight = headerHeight + 7 * (cellSize + cellGap);
+
+const dayLabels = [
+  { label: "Mon", row: 0 },
+  { label: "Wed", row: 2 },
+  { label: "Fri", row: 4 },
+  { label: "Sun", row: 6 },
+];
+---
+
+<div class="max-sm:overflow-x-auto">
+  <svg
+    viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+    class="block h-auto max-sm:min-w-[640px]"
+    role="img"
+    aria-label={`Activity heatmap for ${year}`}
+  >
+    {
+      monthPositions.map(({ label, x }) => (
+        <text
+          x={x}
+          y={10}
+          font-size="10"
+          fill="#6b7280"
+          font-family="sans-serif"
+        >
+          {label}
+        </text>
+      ))
+    }
+
+    {
+      dayLabels.map(({ label, row }) => (
+        <text
+          x={0}
+          y={headerHeight + row * (cellSize + cellGap) + cellSize - 1}
+          font-size="9"
+          fill="#9ca3af"
+          font-family="sans-serif"
+        >
+          {label}
+        </text>
+      ))
+    }
+
+    {
+      weeks.map((week, w) =>
+        week.map((cell, d) => (
+          <rect
+            x={labelWidth + w * (cellSize + cellGap)}
+            y={headerHeight + d * (cellSize + cellGap)}
+            width={cellSize}
+            height={cellSize}
+            rx="2"
+            fill={cell.color}
+            data-type={cell.type}
+            data-color={cell.color}
+            data-secondaries={cell.secondaries ? JSON.stringify(cell.secondaries) : undefined}
+          />
+        )),
+      )
+    }
+  </svg>
+</div>

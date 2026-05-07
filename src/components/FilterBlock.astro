@@ -1,0 +1,109 @@
+---
+import { Bike, Activity, Ellipsis } from "lucide-astro";
+import type { CategoryStats } from "../types/strava";
+
+interface Props {
+  recentYears: number[];
+  olderYears: number[];
+  currentYear: number;
+  categories: CategoryStats[];
+  totalActivities: number;
+}
+
+const { recentYears, olderYears, currentYear, categories, totalActivities } =
+  Astro.props;
+
+const icons: Record<string, typeof Bike> = {
+  cycling: Bike,
+  strength: Activity,
+  other: Ellipsis,
+};
+---
+
+<div class="mt-6">
+  <div class="flex flex-wrap gap-2" id="year-selector">
+    {
+      recentYears.map((year) => (
+        <button
+          class:list={[
+            "rounded-md px-3 py-1 text-sm transition-colors",
+            year === currentYear
+              ? "bg-gray-900 text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200",
+          ]}
+          data-year={year}
+          aria-pressed={year === currentYear ? "true" : "false"}
+        >
+          {year}
+        </button>
+      ))
+    }
+    {
+      olderYears.length > 0 && (
+        <>
+          <span id="older-year-buttons" class="hidden contents">
+            {olderYears.map((year) => (
+              <button
+                class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-200"
+                data-year={year}
+                aria-pressed="false"
+              >
+                {year}
+              </button>
+            ))}
+          </span>
+          <button
+            id="toggle-older-years"
+            class="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+            aria-expanded="false"
+          >
+            &rsaquo;
+          </button>
+        </>
+      )
+    }
+  </div>
+
+  <div class="mt-2 flex flex-wrap gap-2" id="category-selector">
+    {
+      categories.map((cat) => {
+        const Icon = icons[cat.key];
+        const pct =
+          totalActivities > 0
+            ? Math.round((cat.count / totalActivities) * 100)
+            : 0;
+        return (
+          <button
+            class="flex items-center gap-1.5 rounded-md bg-gray-100 px-2.5 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-200"
+            data-filter={cat.key}
+            data-color={cat.color}
+            aria-pressed="false"
+          >
+            <span class="filter-icon" style={`color: ${cat.color}`}>
+              {cat.key === "running" ? (
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m15 10.42 4.8-5.07" />
+                  <path d="M19 18h3" />
+                  <path d="M9.5 22 21.414 9.415A2 2 0 0 0 21.2 6.4l-5.61-4.208A1 1 0 0 0 14 3v2a2 2 0 0 1-1.394 1.906L8.677 8.053A1 1 0 0 0 8 9c-.155 6.393-2.082 9-4 9a2 2 0 0 0 0 4h14" />
+                </svg>
+              ) : (
+                <Icon size={14} />
+              )}
+            </span>
+            <span class="font-medium">{cat.label}</span>
+            <span class="pct-label min-w-[3ch] text-right text-gray-400">{pct}%</span>
+          </button>
+        );
+      })
+    }
+  </div>
+</div>
