@@ -1,8 +1,38 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const profileSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    name: "Benedikt Prisett",
+    url: "https://benedikt.prisett.de/",
+    jobTitle: "AI Developer",
+    worksFor: {
+      "@type": "Organization",
+      name: "SAP",
+      sameAs: "https://www.sap.com",
+    },
+    affiliation: {
+      "@type": "CollegeOrUniversity",
+      name: "University of Mannheim",
+      sameAs: "https://www.uni-mannheim.de/",
+    },
+    sameAs: [
+      "https://www.linkedin.com/in/benedikt-prisett",
+      "https://github.com/benediktpri",
+    ],
+  },
+};
 ---
 
 <BaseLayout title="Benedikt Prisett">
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(profileSchema)}
+    slot="head"
+  />
   <section class="py-16 sm:py-24">
     <h1 class="text-2xl font-medium text-gray-900">Hi, I'm Benedikt.</h1>
     <div class="mt-6 space-y-4 leading-relaxed text-gray-600">
