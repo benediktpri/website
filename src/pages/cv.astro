@@ -1,10 +1,85 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+// CV — Stacked timeline
+// Single column. Each entry: title + dates on one line, then org name, then a
+// description. No logos, no skill tags. Section labels sit above the list.
+
+const experience = [
+  {
+    role: "AI Developer — SAP STAR Master's Program",
+    org: "SAP SE",
+    dates: "2024 — Present",
+    description:
+      "I build agentic AI systems at SAP Signavio, taking research ideas from prototypes into production. I've shipped tools for AI-assisted process discovery and modeling that are now used by customers. My work spans the full stack, from Python backends to React frontends.",
+  },
+  {
+    role: "Data Science Student — SAP STAR Program",
+    org: "SAP SE",
+    dates: "2021 — 2024",
+    description:
+      "A dual-study program alternating academic semesters with three-month rotations across SAP teams. I worked on machine learning, NLP, and cloud projects including demand forecasting, warehouse optimisation, LLM security research, and AI applications in business process management. One rotation took me abroad to SAP's Innovation Center in Palo Alto, California.",
+  },
+];
+
+const education = [
+  {
+    degree: "M.Sc. Data Science",
+    org: "University of Mannheim",
+    dates: "2024 — 2027",
+    description:
+      "Focused on machine learning and modern AI systems. My thesis explores knowledge and context management for agentic AI. I spent a semester abroad at UPC Barcelona.",
+  },
+  {
+    degree: "B.Sc. Business Information Technology — Data Science",
+    org: "DHBW Mannheim",
+    dates: "2021 — 2024",
+    description:
+      "Dual study program with SAP, combining computer science, data science, and business. Graduated with a thesis on extracting process models from business documents.",
+  },
+];
 ---
 
 <BaseLayout title="CV — Benedikt Prisett">
-  <section class="flex flex-1 flex-col items-center justify-center text-center">
-    <p class="text-xl font-light text-gray-400">work in progress</p>
-    <p class="mt-2 text-sm text-gray-400">stay tuned</p>
+  <section class="py-10 sm:py-14">
+    <h1 class="text-2xl font-medium text-gray-900">Curriculum Vitae</h1>
+
+    <!-- Experience -->
+    <h2 class="mt-10 text-sm font-medium tracking-wide text-gray-400 uppercase">
+      Experience
+    </h2>
+    <div class="mt-6 space-y-10">
+      {
+        experience.map((job) => (
+          <article class="border-l-2 border-gray-200 pl-5">
+            <div class="flex items-baseline justify-between gap-4">
+              <h3 class="font-medium text-gray-900">{job.role}</h3>
+              <span class="shrink-0 text-sm text-gray-400">{job.dates}</span>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">{job.org}</p>
+            <p class="mt-3 leading-relaxed text-gray-600">{job.description}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- Education -->
+    <h2 class="mt-14 text-sm font-medium tracking-wide text-gray-400 uppercase">
+      Education
+    </h2>
+    <div class="mt-6 space-y-10">
+      {
+        education.map((edu) => (
+          <article class="border-l-2 border-gray-200 pl-5">
+            <div class="flex items-baseline justify-between gap-4">
+              <h3 class="font-medium text-gray-900">{edu.degree}</h3>
+              <span class="shrink-0 text-sm text-gray-400">{edu.dates}</span>
+            </div>
+            <p class="mt-1 text-sm text-gray-600">{edu.org}</p>
+            <p class="mt-3 leading-relaxed text-gray-600">{edu.description}</p>
+          </article>
+        ))
+      }
+    </div>
   </section>
 </BaseLayout>
