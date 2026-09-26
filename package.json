@@ -17,6 +17,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.2.2",
     "lucide-astro": "^0.556.0",
