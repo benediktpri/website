@@ -1,12 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <style>
-    .tile { fill: #2C2C2A }
-    .mark { fill: #F1EFE8 }
-    @media (prefers-color-scheme: dark) {
-      .tile { fill: #F1EFE8 }
-      .mark { fill: #2C2C2A }
-    }
-  </style>
-  <rect class="tile" width="64" height="64" rx="14"/>
-  <path class="mark" d="M12 44.22V19.78H21.7Q24.39 19.78 26.18 20.59Q27.98 21.4 28.87 22.81Q29.77 24.22 29.77 26.06Q29.77 27.51 29.19 28.58Q28.62 29.65 27.63 30.33Q26.63 31.02 25.37 31.31V31.56Q26.75 31.61 27.97 32.34Q29.19 33.07 29.96 34.37Q30.72 35.67 30.72 37.48Q30.72 39.42 29.77 40.94Q28.82 42.47 26.95 43.34Q25.09 44.22 22.32 44.22ZM17 40.1H21.33Q23.53 40.1 24.55 39.25Q25.57 38.4 25.57 37Q25.57 35.97 25.07 35.17Q24.57 34.38 23.65 33.93Q22.73 33.48 21.47 33.48H17ZM17 30.05H20.96Q22.02 30.05 22.88 29.66Q23.73 29.28 24.21 28.56Q24.7 27.85 24.7 26.87Q24.7 25.54 23.75 24.7Q22.81 23.86 21.06 23.86H17ZM33.72 44.22V19.78H43.26Q46.04 19.78 48 20.84Q49.95 21.89 50.97 23.76Q52 25.62 52 28.03Q52 30.46 50.96 32.3Q49.92 34.15 47.94 35.19Q45.96 36.23 43.14 36.23H37.01V32.2H42.34Q43.88 32.2 44.87 31.66Q45.86 31.13 46.35 30.2Q46.83 29.26 46.83 28.03Q46.83 26.8 46.35 25.87Q45.86 24.95 44.86 24.43Q43.86 23.91 42.32 23.91H38.73V44.22Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800"><defs><radialGradient id="orb" cx="0.5" cy="0.5" r="0.5"><stop offset="0.0000" stop-color="#2C3A66"/><stop offset="0.0417" stop-color="#32406B"/><stop offset="0.0833" stop-color="#384571"/><stop offset="0.1250" stop-color="#3D4B76"/><stop offset="0.1667" stop-color="#43507C"/><stop offset="0.2083" stop-color="#495681"/><stop offset="0.2500" stop-color="#4F5C87"/><stop offset="0.2917" stop-color="#54618C"/><stop offset="0.3333" stop-color="#5A6791"/><stop offset="0.3750" stop-color="#616D97"/><stop offset="0.4167" stop-color="#67739C"/><stop offset="0.4583" stop-color="#6D79A1"/><stop offset="0.5000" stop-color="#7480A6"/><stop offset="0.5417" stop-color="#7B87AB"/><stop offset="0.5833" stop-color="#828EB0"/><stop offset="0.6250" stop-color="#8A95B4"/><stop offset="0.6667" stop-color="#919CB9"/><stop offset="0.7083" stop-color="#99A4BE"/><stop offset="0.7500" stop-color="#A0ABC2"/><stop offset="0.7917" stop-color="#A8B2C7"/><stop offset="0.8333" stop-color="#AFB8CC"/><stop offset="0.8750" stop-color="#B6BFD0"/><stop offset="0.9167" stop-color="#BDC5D5"/><stop offset="0.9583" stop-color="#C4CCD9"/><stop offset="1.0000" stop-color="#CBD2DE"/></radialGradient></defs><circle cx="400" cy="400" r="380" fill="url(#orb)"/></svg>
